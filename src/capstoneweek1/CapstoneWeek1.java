@@ -13,6 +13,9 @@ public class CapstoneWeek1 {
                 + "and Amin's Capstone Project for CSC 422.");
         
         System.out.println("This is Will making a change to the test file.  Cheers!");
+        
+        // new comment to test push - will
+        System.out.println("test new comment");
     }
     
 }
