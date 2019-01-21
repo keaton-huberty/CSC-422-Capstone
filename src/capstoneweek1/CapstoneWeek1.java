@@ -11,6 +11,8 @@ public class CapstoneWeek1 {
     public static void main(String[] args) {
         System.out.println("Hello World! This will become Keaton, Will, Mike"
                 + "and Amin's Capstone Project for CSC 422.");
+        
+        System.out.println("This is Will making a change to the test file.  Cheers!");
     }
     
 }
