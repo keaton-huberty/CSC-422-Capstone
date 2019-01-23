@@ -14,6 +14,7 @@ import java.sql.Statement;
 /**
  *
  * @author Will
+ * This is the database connection utility
  */
 public class DBUtility {
 

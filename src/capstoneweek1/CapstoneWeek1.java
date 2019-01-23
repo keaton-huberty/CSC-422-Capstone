@@ -1,5 +1,5 @@
 /*
-This is a place holder to put into the capstone repository on our GitHub
+Capstone Team 1
  */
 package capstoneweek1;
 
