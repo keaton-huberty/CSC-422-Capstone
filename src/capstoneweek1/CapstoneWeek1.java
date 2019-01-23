@@ -3,11 +3,7 @@ This is a place holder to put into the capstone repository on our GitHub
  */
 package capstoneweek1;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;

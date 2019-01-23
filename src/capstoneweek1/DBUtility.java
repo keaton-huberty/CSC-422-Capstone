@@ -43,7 +43,6 @@ public class DBUtility {
         //In order to read what the query returns, we have to use resultSet.next(), otherwise we get an error
         //Here I am assigning the correct password with the username
         if (resultSet.next()) {
-
             username = resultSet.getString("userName");
             password = resultSet.getString("userPassword");
         } else {
@@ -51,11 +50,7 @@ public class DBUtility {
         }
 
         //checking to see if the user entered password equals the password stored in the database
-        if (inputPassword.contains(password)) {
-            return true;
-        } else {
-            return false;
-        }
+        return inputPassword.equals(password);
 
     }
     
