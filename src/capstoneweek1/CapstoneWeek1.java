@@ -1,5 +1,5 @@
 /*
-Capstone Team 1
+Capstone Team 1n 
  */
 package capstoneweek1;
 
@@ -25,6 +25,8 @@ public class CapstoneWeek1 extends Application {
     private final Label lbUsername = new Label("Username");
     private final Label lbPassword = new Label("Password");
     private final Button btnLogin = new Button("Login");
+    
+    // New comment to test pushing to GitHub
 
     @Override
     public void start(Stage primaryStage) throws Exception {
