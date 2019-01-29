@@ -1,4 +1,4 @@
- /*
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -16,7 +16,7 @@ import java.sql.Statement;
  * @author Will
  * This is the database connection utility
  */
-public class DBUtility {  
+public class DBUtility {
 
     // creating class variables used to connect to the database.
     // watch this youtube video to add the "connector" - https://www.youtube.com/watch?v=nW13FmTdkjc
@@ -26,7 +26,7 @@ public class DBUtility {
 
     // dbConnect will connect to the database on the local host
     public void dbConnect() throws SQLException {
-        conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/capstone2019", "root", "mysql");
+        conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/Capstone2019", "root", "mysql");
         Statement stmt = null;
     }
 
