@@ -59,7 +59,10 @@ public class CapstoneWeek1 extends Application {
         // Adding the vertical box to the scene
         Scene scene = new Scene(vBox, 250, 350);
 
-        
+        // adding the stylesheet
+         scene.getStylesheets().add
+        (CapstoneWeek1.class.getResource("Login.css").toExternalForm());
+          primaryStage.show();
         // this is the listener that calls the function to check if the username matches the password
         // if correct, the window will close and a new window will open that will be the user's dashboard
         btnLogin.setOnAction((javafx.event.ActionEvent e) -> {
