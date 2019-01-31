@@ -26,7 +26,8 @@ public class DBUtility {
 
     // dbConnect will connect to the database on the local host
     public void dbConnect() throws SQLException {
-        conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/Capstone2019", "root", "mysql"); 
+        //conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/Capstone2019", "root", "mysql");
+        conn = DriverManager.getConnection("jdbc:mysql://remotemysql.com:3306/x8PTdSHvqZ", "x8PTdSHvqZ", "Pd67T8sc88"); 
     }
     
     public void dbClose() throws SQLException{
