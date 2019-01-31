@@ -26,8 +26,11 @@ public class DBUtility {
 
     // dbConnect will connect to the database on the local host
     public void dbConnect() throws SQLException {
-        conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/Capstone2019", "root", "mysql");
-        Statement stmt = null;
+        conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/Capstone2019", "root", "mysql"); 
+    }
+    
+    public void dbClose() throws SQLException{
+        this.conn.close();
     }
 
     // checkLogin will take the username and password entered as strings
