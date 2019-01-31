@@ -101,6 +101,7 @@ public class CapstoneWeek1 extends Application {
                     launchDashboard(tfUsername.getText());
                     
                     //db.dbClose();
+                    //
 
                 } else {
                     loginError();
