@@ -8,13 +8,15 @@ and open the template in the editor.
     Author     : amin
 */
 .root { 
--fx-background-image: url("background.png");
--fx-background-size:110px;
+    /*-fx-background-image: url("background.png");*/
+    -fx-background-size:110px;
     -fx-background-repeat: no-repeat;
     -fx-background-position:  center 8px;
-    -fx-background-color:linear-gradient(lightgray, gray);
+    -fx-background-color:linear-gradient(lightgray, black);
 }
+
 .label {
+
     -fx-font-size: 20px;
     -fx-font-weight: bold;
     -fx-text-fill: white;
@@ -27,8 +29,16 @@ and open the template in the editor.
     -fx-font-weight: bold;
     -fx-background-color: linear-gradient(#61a2b1, #2A5058);
     -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
+    -fx-padding: 10px;
+    -fx-background-insets: 5px;
+    -fx-border-radius: 0;
+    -fx-background-radius: 0;
 }
 .button:hover {
     -fx-background-color: linear-gradient(orange, orangered );
-
+}
+.text-field {
+    -fx-max-width: 200;
+    -fx-border-radius: 0;
+    -fx-background-radius: 0;
 }
