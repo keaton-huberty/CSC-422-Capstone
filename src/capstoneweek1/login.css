@@ -8,7 +8,7 @@ and open the template in the editor.
     Author     : amin
 */
 .root { 
-/*-fx-background-image: url("background.png");*/
+-fx-background-image: url("background.png");
 -fx-background-size:110px;
     -fx-background-repeat: no-repeat;
     -fx-background-position:  center 8px;
