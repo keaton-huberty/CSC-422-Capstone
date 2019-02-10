@@ -10,11 +10,11 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 
 /**
  *
- * @author Will
- * This is the database connection utility
+ * @author Will This is the database connection utility
  */
 public class DBUtility {
 
@@ -27,10 +27,10 @@ public class DBUtility {
     // dbConnect will connect to the database on the local host
     public void dbConnect() throws SQLException {
         //conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/Capstone2019", "root", "mysql");
-        conn = DriverManager.getConnection("jdbc:mysql://remotemysql.com:3306/x8PTdSHvqZ", "x8PTdSHvqZ", "Pd67T8sc88"); 
+        conn = DriverManager.getConnection("jdbc:mysql://remotemysql.com:3306/x8PTdSHvqZ", "x8PTdSHvqZ", "Pd67T8sc88");
     }
-    
-    public void dbClose() throws SQLException{
+
+    public void dbClose() throws SQLException {
         this.conn.close();
     }
 
@@ -39,7 +39,7 @@ public class DBUtility {
     public boolean checkLogin(String inputUserName, String inputPassword) throws SQLException {
         String username = null;
         String password = null;
-        
+
         //first have to creat a statement
         stmt = conn.createStatement();
         // this runs the SQL query - notice the extra single quotes around the string.  Don't forget those.
@@ -58,8 +58,27 @@ public class DBUtility {
         return inputPassword.equals(password);
 
     }
-    
+
+    public ResultSet getUserInfo(String inputUserName) throws SQLException {
+
+        //first have to creat a statement
+        stmt = conn.createStatement();
+        // this runs the SQL query - notice the extra single quotes around the string.  Don't forget those.
+        resultSet = stmt.executeQuery("SELECT * FROM userLogin WHERE userName = '" + inputUserName + "'");
+        return resultSet;
+    }
+
+    public void createNewAccount(String userName, String password, String firstName, String lastName, String email, LocalDate dob, String bio) throws SQLException {
+
+        stmt = conn.createStatement();
+        // this runs the SQL query - notice the extra single quotes around the string.  Don't forget those.
+        stmt.executeUpdate("INSERT INTO `userLogin`(`userName`, `userPassword`, `Email`, `Dob`, `Image`, `firstName`, `lastName`, `Bio`) VALUES ('" + userName + "','" + password + "','" + email + "','" + dob + "' ,null,'" + firstName + "','" + lastName + "','" + bio + "')");
+
+    }
+
     // constructor
-    public DBUtility(){};
+    public DBUtility() {
+    }
+;
 
 }
