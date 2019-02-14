@@ -75,7 +75,7 @@ public class DBUtility {
         stmt.executeUpdate("INSERT INTO `userLogin`(`userName`, `userPassword`, `Email`, `Dob`, `Image`, `firstName`, `lastName`, `Bio`) VALUES ('" + userName + "','" + password + "','" + email + "','" + dob + "' ,null,'" + firstName + "','" + lastName + "','" + bio + "')");
 
     }
-//method for getting all users
+    //gets users for friends list, will eventually pull from follower table
     public ResultSet getUsers() throws SQLException {
         dbConnect();
         //first have to creat a statement
@@ -85,6 +85,15 @@ public class DBUtility {
         return resultSet;
     }
     
+        public ResultSet getFriends() throws SQLException {
+        dbConnect();
+        //first have to creat a statement
+        stmt = conn.createStatement();
+        // this runs the SQL query - notice the extra single quotes around the string.  Don't forget those.
+        resultSet = stmt.executeQuery("SELECT userName FROM userLogin");
+        return resultSet;
+    }
+        
 //method for inserting msg into the databse
     public void insertMsg(String sender, String receiver, String msg) throws SQLException {
         dbConnect();
