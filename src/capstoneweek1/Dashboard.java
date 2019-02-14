@@ -7,6 +7,7 @@ package capstoneweek1;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
@@ -19,6 +20,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TextArea;
@@ -33,14 +35,11 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-
 /**
  *
  * @author Will
  */
 public class Dashboard {
-
-
 
     private String userName,fName, lName, bio;
 
@@ -110,7 +109,6 @@ public class Dashboard {
         //set up right pane for friends/messages
         //white space for formatting reasons
         Text whiteSpace = new Text("\n");
-        Text whiteSpace2 = new Text("\n");
         //button for messages, doesn't really function yet
         Button btnMessages = new Button("Messages");
         Text btnLabel2 = new Text("");
@@ -126,12 +124,8 @@ public class Dashboard {
         btnVbox.getChildren().addAll(btnMessages, btnLabel2);
         VBox rightVbox = new VBox();
         rightVbox.setSpacing(10);
-        Text flLabel = new Text("Friends");
+        Text flLabel = new Text("Followers");
         flLabel.setStyle("-fx-font: 24 arial;");
-
-        Text friends = new Text("1. Mike\n2. Amin\n3. Keaton\n");
-        friends.setStyle("-fx-font: 20 arial;");
-        
         
         Text lable = new Text("Received Msgs");
         //send button
@@ -151,11 +145,20 @@ public class Dashboard {
         scrollPane.setPrefWidth(100);
         scrollPane.setPrefHeight(150);
         
-//        text area for typing msg
+        //text area for typing msg
         TextArea msgType=new TextArea();
         msgType.setPrefHeight(10);
         msgType.setPrefWidth(100);
-
+        //set up list to hold friends
+        ListView friendsList = new ListView();
+        DBUtility dbobj=new DBUtility();
+        ResultSet userFriends=dbobj.getFriends();
+        while(userFriends.next()){
+                  friendsList.getItems().add(
+                                    userFriends.getString("userName")//adding users in drop down from database
+                                );
+        
+        }
         //setting place holder
         msgType.setPromptText("Type Msg here");
         
@@ -167,7 +170,7 @@ public class Dashboard {
 //                                    "Keaton"
 //                                );
         //getting all users from database to fill the dropdown
-        DBUtility dbobj=new DBUtility();
+        //DBUtility dbobj=new DBUtility();
         ResultSet users=dbobj.getUsers();
         while(users.next()){
                   friends1.getItems().addAll(
@@ -175,6 +178,7 @@ public class Dashboard {
                                 );
         
         }
+        
         //adding listener to send button
         sendButton.setOnAction((javafx.event.ActionEvent e) -> {
             boolean isMyComboBoxEmpty = friends1.getSelectionModel().isEmpty();//to check if user is selected from dropdown
@@ -226,7 +230,7 @@ public class Dashboard {
 
         
         
-        rightVbox.getChildren().addAll(whiteSpace, btnVbox, whiteSpace2, flLabel, horizSep, friends,friends1, lable,scrollPane,msgType,sendButton);
+        rightVbox.getChildren().addAll(whiteSpace,flLabel, friendsList, friends1, lable,scrollPane,msgType,sendButton);
 
         //set up bottom pane
         Text bottomText = new Text("Created by Keaton, Will, Mike, and Amin (2019)");
@@ -246,7 +250,7 @@ public class Dashboard {
 
         dashboardStage.setScene(dashboard);
         dashboardStage.setMinHeight(650);
-        dashboardStage.setMinWidth(1100);
+        dashboardStage.setMinWidth(1350);
 
         
         //primaryStage.close();
