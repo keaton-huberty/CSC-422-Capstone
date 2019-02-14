@@ -73,7 +73,7 @@ public class User {
             this.lName = userInfo.getString("lastName");
             this.bio = userInfo.getString("Bio");
         }       
-        this.dashboard = new Dashboard(fName, lName, bio);
+        this.dashboard = new Dashboard(userName,fName, lName, bio);
     }
 
 }
