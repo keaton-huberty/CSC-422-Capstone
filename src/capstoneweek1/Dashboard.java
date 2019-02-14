@@ -5,18 +5,31 @@
  */
 package capstoneweek1;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextAreaBuilder;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -29,17 +42,16 @@ public class Dashboard {
 
 
 
-    private String fName, lName, bio;
+    private String userName,fName, lName, bio;
 
-    public Dashboard(String fName, String lName, String bio) {
+    public Dashboard(String userName, String fName, String lName, String bio) {
+        this.userName=userName;
         this.fName = fName;
         this.lName = lName;
         this.bio = bio;
-    }
-
-    ;
+    };
     
-    public void launchDashboard() {
+    public void launchDashboard() throws SQLException {
 
         Stage dashboardStage = new Stage();
         //sets title at top of window
@@ -119,27 +131,130 @@ public class Dashboard {
 
         Text friends = new Text("1. Mike\n2. Amin\n3. Keaton\n");
         friends.setStyle("-fx-font: 20 arial;");
-        rightVbox.getChildren().addAll(whiteSpace, btnVbox, whiteSpace2, flLabel, horizSep, friends);
+        
+        
+        Text lable = new Text("Received Msgs");
+        //send button
+        Button sendButton= new Button("Send");
+         //making a text area
+         TextArea textArea = TextAreaBuilder.create()
+                .prefWidth(100)
+                .wrapText(true)
+                .build();
+                //chatbox code here
+       
+         //adding a scroll pane for scrolling in text area
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setContent(textArea);
+        scrollPane.setFitToWidth(true);
+        //setting height and width
+        scrollPane.setPrefWidth(100);
+        scrollPane.setPrefHeight(150);
+        
+//        text area for typing msg
+        TextArea msgType=new TextArea();
+        msgType.setPrefHeight(10);
+        msgType.setPrefWidth(100);
+
+        //setting place holder
+        msgType.setPromptText("Type Msg here");
+        
+        //        creating dropdown for friend selection
+        ComboBox friends1=new ComboBox();
+//        friends1.getItems().addAll(
+//                                    "Mike",
+//                                    "Amin",
+//                                    "Keaton"
+//                                );
+        //getting all users from database to fill the dropdown
+        DBUtility dbobj=new DBUtility();
+        ResultSet users=dbobj.getUsers();
+        while(users.next()){
+                  friends1.getItems().addAll(
+                                    users.getString("userName")//adding users in drop down from database
+                                );
+        
+        }
+        //adding listener to send button
+        sendButton.setOnAction((javafx.event.ActionEvent e) -> {
+            boolean isMyComboBoxEmpty = friends1.getSelectionModel().isEmpty();//to check if user is selected from dropdown
+            String receiver=String.valueOf(friends1.getValue());//getting value of selected user from dropdown
+            //condition for check user is selected other show alert
+            if(isMyComboBoxEmpty){
+                Alert alert = new Alert(AlertType.INFORMATION, "Please Select User From DropDown!", ButtonType.OK);
+                alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+                alert.show();
+                return;
+            }
+            String msg=msgType.getText();//getting value of msg
+            //checking if msg box is empty
+            if(msg.compareTo("")==0){
+                Alert alert = new Alert(AlertType.INFORMATION, "Enter Text in Msg Box!", ButtonType.OK);
+                alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+                alert.show();
+                return;
+            }
+            try {
+                dbobj.insertMsg(userName, receiver, msg);//calling insertmsg method frm DBUtility
+                msgType.setText("");
+                msgType.setPromptText("Type Msg here");
+                //creating alert for msg sent
+                Alert alert = new Alert(AlertType.INFORMATION, "Message Sent!", ButtonType.OK);
+                alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+                alert.show();
+                
+            } catch (SQLException ex) {
+                Logger.getLogger(Dashboard.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+        
+        //setting text in msg box for recieved msg
+        ResultSet msgs=dbobj.getMsg(userName);
+        String setText="";
+       
+        while(msgs.next()){
+           //setting msgs into the text box
+            String from=msgs.getString("msgSender");
+            String msgContent=msgs.getString("msgContent");
+            
+            setText=setText+"From "+from+":\n"+msgContent+"\n";
+            textArea.setText(setText);
+           
+            
+        
+        }
+
+        
+        
+        rightVbox.getChildren().addAll(whiteSpace, btnVbox, whiteSpace2, flLabel, horizSep, friends,friends1, lable,scrollPane,msgType,sendButton);
 
         //set up bottom pane
         Text bottomText = new Text("Created by Keaton, Will, Mike, and Amin (2019)");
-
+        
         //create border pane with each part as set up above
         BorderPane bPane = new BorderPane();
         bPane.setRight(rightVbox);
         bPane.setBottom(bottomText);
         bPane.setLeft(leftVbox);
+        
+        
+        
+        
         //width, height of actual scene
         Scene dashboard = new Scene(bPane, 1100, 650);
+       
 
         dashboardStage.setScene(dashboard);
         dashboardStage.setMinHeight(650);
         dashboardStage.setMinWidth(1100);
 
+        
         //primaryStage.close();
         dashboardStage.show();
         //set background color to a light grey
         bPane.setStyle("-fx-background-color: #DCDCDC;");
+        
+        
     }
 
     public void friendDashboard(String strName, Dashboard dashboard) {
