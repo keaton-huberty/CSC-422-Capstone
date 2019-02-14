@@ -11,6 +11,8 @@ import static javafx.application.Application.launch;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
@@ -190,24 +192,39 @@ public class CapstoneWeek1 extends Application {
 
         btnCreateAccountNew.setOnAction((javafx.event.ActionEvent e) -> {
 
-            System.out.println("Test create new account!");
-            DBUtility dbNewAccount = new DBUtility();
-            try {
-                dbNewAccount.dbConnect();
-            } catch (SQLException ex) {
-                Logger.getLogger(CapstoneWeek1.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            if (tfUsernameNew.getText().isEmpty()
+                    | tfFirstName.getText().isEmpty()
+                    | tfLastName.getText().isEmpty()
+                    | tfEmail.getText().isEmpty()
+                    | tfBio.getText().isEmpty()) {
+                Alert alert = new Alert(AlertType.WARNING);
+                alert.setTitle("Validate Fields");
+                alert.setHeaderText(null);
+                alert.setContentText("Empty Fields");
+                alert.showAndWait();
+            } else {
 
-            try {
-                dbNewAccount.createNewAccount(tfUsernameNew.getText(), tfPassword1.getText(), tfFirstName.getText(), tfLastName.getText(), tfEmail.getText(), dpDob.getValue(), tfBio.getText());
-            } catch (SQLException ex) {
-                Logger.getLogger(CapstoneWeek1.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("Test create new account!");
+                DBUtility dbNewAccount = new DBUtility();
+                try {
+                    dbNewAccount.dbConnect();
+                } catch (SQLException ex) {
+                    Logger.getLogger(CapstoneWeek1.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+                try {
+                    dbNewAccount.createNewAccount(tfUsernameNew.getText(), tfPassword1.getText(), tfFirstName.getText(), tfLastName.getText(), tfEmail.getText(), dpDob.getValue(), tfBio.getText());
+                } catch (SQLException ex) {
+                    Logger.getLogger(CapstoneWeek1.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                try {
+                    dbNewAccount.dbClose();
+                } catch (SQLException ex) {
+                    Logger.getLogger(CapstoneWeek1.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
-            try {
-                dbNewAccount.dbClose();
-            } catch (SQLException ex) {
-                Logger.getLogger(CapstoneWeek1.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            
+            
 
         });
     }
