@@ -5,6 +5,9 @@
  */
 package capstoneweek1;
 
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
@@ -26,8 +29,6 @@ import javafx.stage.Stage;
  * @author Will
  */
 public class Dashboard {
-
-
 
     private String fName, lName, bio;
 
@@ -102,12 +103,7 @@ public class Dashboard {
         //button for messages, doesn't really function yet
         Button btnMessages = new Button("Messages");
         Text btnLabel2 = new Text("");
-        btnMessages.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent e) {
-                btnLabel2.setText("No messages");
-            }
-        });
+
         btnMessages.setStyle("-fx-background-color: #F7C4C1; -fx-border-color: #000000; -fx-font-size: 2em;");
         //btnMessages.setStyle("-fx-border-color: #000000;");
         VBox btnVbox = new VBox();
@@ -140,12 +136,30 @@ public class Dashboard {
         dashboardStage.show();
         //set background color to a light grey
         bPane.setStyle("-fx-background-color: #DCDCDC;");
+
+        btnMessages.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                btnLabel2.setText("No messages");
+                DBUtility db = new DBUtility();
+
+                try {
+                    db.dbConnect();
+                    User friend = new User(db.getUserInfo("will"));
+                    dashboardStage.close();
+
+                    friend.getDashboard().launchDashboard();
+                    db.dbClose();
+                } catch (SQLException ex) {
+                    Logger.getLogger(Dashboard.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            }
+        });
     }
 
     public void friendDashboard(String strName, Dashboard dashboard) {
 
     }
-
-
 
 }

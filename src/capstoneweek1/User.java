@@ -15,6 +15,7 @@ import javafx.scene.image.Image;
  */
 public class User {
 
+
     private String userName;
     private String email;
     private String fName;
@@ -22,7 +23,24 @@ public class User {
     private String bio;
     private Image profilePic = new Image("userPic.png");
     private Dashboard dashboard;
+    private Dashboard friendDashboard;
     //private ResultSet userInfo = null;
+    
+    
+        /**
+     * @return the friendDashboard
+     */
+    public Dashboard getFriendDashboard() {
+        return friendDashboard;
+    }
+
+    /**
+     * @param friendDashboard the friendDashboard to set
+     */
+    public void setFriendDashboard(Dashboard friendDashboard) {
+        this.friendDashboard = friendDashboard;
+    }
+
 
     /**
      * @return the dashboard

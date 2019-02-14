@@ -41,6 +41,7 @@ public class CapstoneWeek1 extends Application {
     private final ImageView imgViewLogo = new ImageView();
     private final Image imgLogo = new Image("background.png");
     private final Label wrongLogin = new Label("");
+    
 
     // New comment to test pushing to GitHub
     @Override
@@ -97,6 +98,7 @@ public class CapstoneWeek1 extends Application {
                     primaryStage.close();
                     User user = new User(db.getUserInfo(tfUsername.getText()));
                     user.getDashboard().launchDashboard();
+                    db.dbClose();
 
                 } else {
                     //loginError();
