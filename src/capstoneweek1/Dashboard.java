@@ -62,6 +62,13 @@ public class Dashboard {
         ImageView profilePicView = new ImageView(profilePic);
         profilePicView.setPreserveRatio(true);
         profilePicView.setFitHeight(150);
+        //setup home button icon
+        Image homeIcon = new Image("home.png");
+        ImageView homeView = new ImageView(homeIcon);
+        homeView.setPreserveRatio(true);
+        homeView.setFitHeight(20);
+        Button homeButton = new Button();
+        homeButton.setGraphic(homeView);
         //vbox for holding name over current game
         VBox nameAndGame = new VBox();
         Text name = new Text(fName + " " + lName);
@@ -71,7 +78,8 @@ public class Dashboard {
         nameAndGame.getChildren().addAll(name, currentGame);
         //flow pane for holding picture, name/game, and messages button
         FlowPane topPane = new FlowPane();
-        Text tab = new Text("\t   ");
+        Text tab = new Text("\t   ");    
+        //add to top pane
         topPane.getChildren().addAll(tab, profilePicView, nameAndGame);
         topPane.setHgap(10);
         nameAndGame.setAlignment(Pos.CENTER_LEFT);
@@ -107,8 +115,6 @@ public class Dashboard {
         leftVbox.setSpacing(10);
 
         //set up right pane for friends/messages
-        //white space for formatting reasons
-        Text whiteSpace = new Text("\n");
         //button for messages, doesn't really function yet
         Button btnMessages = new Button("Messages");
         Text btnLabel2 = new Text("");
@@ -149,9 +155,9 @@ public class Dashboard {
         TextArea msgType=new TextArea();
         msgType.setPrefHeight(10);
         msgType.setPrefWidth(100);
-        //set up list to hold friends
+        //set up list to hold followers
         ListView friendsList = new ListView();
-        DBUtility dbobj=new DBUtility();
+        DBUtility dbobj=new DBUtility(); 
         ResultSet userFriends=dbobj.getFriends();
         while(userFriends.next()){
                   friendsList.getItems().add(
@@ -227,10 +233,19 @@ public class Dashboard {
             
         
         }
-
-        
-        
-        rightVbox.getChildren().addAll(whiteSpace,flLabel, friendsList, friends1, lable,scrollPane,msgType,sendButton);
+        //set up search bar for finding users
+        ComboBox search = new ComboBox();
+        ResultSet searchUsers = dbobj.getUsers();
+        while(searchUsers.next()) {
+            search.getItems().addAll(
+            searchUsers.getString("userName")
+            );
+        }
+        HBox searchBox = new HBox(search, homeButton);
+        searchBox.setSpacing(20);
+        //set search bar default value
+        search.setPromptText("Find User");
+        rightVbox.getChildren().addAll( searchBox, flLabel, friendsList, friends1, lable,scrollPane,msgType,sendButton);
 
         //set up bottom pane
         Text bottomText = new Text("Created by Keaton, Will, Mike, and Amin (2019)");
