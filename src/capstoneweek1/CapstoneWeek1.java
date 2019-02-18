@@ -6,6 +6,8 @@ package capstoneweek1;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.geometry.Insets;
@@ -192,15 +194,19 @@ public class CapstoneWeek1 extends Application {
 
         btnCreateAccountNew.setOnAction((javafx.event.ActionEvent e) -> {
 
+            Pattern p = Pattern.compile("((?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&+=]).{8,})");
+            Matcher m = p.matcher(tfPassword1.getText());
+            
             if (tfUsernameNew.getText().isEmpty()
                     | tfFirstName.getText().isEmpty()
                     | tfLastName.getText().isEmpty()
                     | tfEmail.getText().isEmpty()
-                    | tfBio.getText().isEmpty()) {
+                    | tfBio.getText().isEmpty()
+                    | !m.matches()) {
                 Alert alert = new Alert(AlertType.WARNING);
                 alert.setTitle("Validate Fields");
                 alert.setHeaderText(null);
-                alert.setContentText("Empty Fields");
+                alert.setContentText("Please make sure your fields are not empty and that your password has a number, lowercase letter, uppercase letter, special character,and/or is at least 8 characters.");
                 alert.showAndWait();
             } else {
 
@@ -222,6 +228,7 @@ public class CapstoneWeek1 extends Application {
                 } catch (SQLException ex) {
                     Logger.getLogger(CapstoneWeek1.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                
             }
             
             
