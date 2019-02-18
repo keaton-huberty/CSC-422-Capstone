@@ -193,7 +193,7 @@ public class CapstoneWeek1 extends Application {
 //        vBox.setStyle("-fx-background-color: #DCDCDC;");
 
         btnCreateAccountNew.setOnAction((javafx.event.ActionEvent e) -> {
-
+//validates password using regex to require a number, a lowercase letter, an uppercase letter, a special character (!@#$%^&+=), and has to be 8 characters or more).
             Pattern p = Pattern.compile("((?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&+=]).{8,})");
             Matcher m = p.matcher(tfPassword1.getText());
             
@@ -204,9 +204,9 @@ public class CapstoneWeek1 extends Application {
                     | tfBio.getText().isEmpty()
                     | !m.matches()) {
                 Alert alert = new Alert(AlertType.WARNING);
-                alert.setTitle("Validate Fields");
+                alert.setTitle("Error in Validating Fields");
                 alert.setHeaderText(null);
-                alert.setContentText("Please make sure your fields are not empty and that your password has a number, lowercase letter, uppercase letter, special character,and/or is at least 8 characters.");
+                alert.setContentText("Please make sure your fields are not empty and that your password is 8 or more characters, has a number, a lowercase letter, an uppercase letter, and a special character.");
                 alert.showAndWait();
             } else {
 
