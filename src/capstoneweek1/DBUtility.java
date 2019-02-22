@@ -75,7 +75,43 @@ public class DBUtility {
         stmt.executeUpdate("INSERT INTO `userLogin`(`userName`, `userPassword`, `Email`, `Dob`, `Image`, `firstName`, `lastName`, `Bio`) VALUES ('" + userName + "','" + password + "','" + email + "','" + dob + "' ,null,'" + firstName + "','" + lastName + "','" + bio + "')");
 
     }
+    //gets users for friends list, will eventually pull from follower table
+    public ResultSet getUsers() throws SQLException {
+        dbConnect();
+        //first have to creat a statement
+        stmt = conn.createStatement();
+        // this runs the SQL query - notice the extra single quotes around the string.  Don't forget those.
+        resultSet = stmt.executeQuery("SELECT userName FROM userLogin");
+        return resultSet;
+    }
+    
+        public ResultSet getFriends() throws SQLException {
+        dbConnect();
+        //first have to creat a statement
+        stmt = conn.createStatement();
+        // this runs the SQL query - notice the extra single quotes around the string.  Don't forget those.
+        resultSet = stmt.executeQuery("SELECT userName FROM userLogin");
+        return resultSet;
+    }
+        
+//method for inserting msg into the databse
+    public void insertMsg(String sender, String receiver, String msg) throws SQLException {
+        dbConnect();
+        stmt = conn.createStatement();
+        // this runs the SQL query - notice the extra single quotes around the string.  Don't forget those.
+        stmt.executeUpdate("INSERT INTO `messenging`(`msgSender`, `msgReceiver`, `msgContent`) VALUES ('" + sender + "','" + receiver + "','" + msg + "')");
 
+    }
+    //method for getting msgs
+      public ResultSet getMsg(String receiver) throws SQLException {
+          
+        dbConnect();
+        //first have to creat a statement
+        stmt = conn.createStatement();
+        // this runs the SQL query - notice the extra single quotes around the string.  Don't forget those.
+        resultSet = stmt.executeQuery("SELECT * FROM messenging where msgReceiver = '" + receiver + "'");
+        return resultSet;
+    }
     // constructor
     public DBUtility() {
     }
