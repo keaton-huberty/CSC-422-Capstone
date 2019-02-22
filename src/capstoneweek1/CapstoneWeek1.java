@@ -6,6 +6,8 @@ package capstoneweek1;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.geometry.Insets;
@@ -193,16 +195,20 @@ public class CapstoneWeek1 extends Application {
 //        vBox.setStyle("-fx-background-color: #DCDCDC;");
 
         btnCreateAccountNew.setOnAction((javafx.event.ActionEvent e) -> {
-
+//validates password using regex to require a number, a lowercase letter, an uppercase letter, a special character (!@#$%^&+=), and has to be 8 characters or more).
+            Pattern p = Pattern.compile("((?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&+=]).{8,})");
+            Matcher m = p.matcher(tfPassword1.getText());
+            
             if (tfUsernameNew.getText().isEmpty()
                     | tfFirstName.getText().isEmpty()
                     | tfLastName.getText().isEmpty()
                     | tfEmail.getText().isEmpty()
-                    | tfBio.getText().isEmpty()) {
+                    | tfBio.getText().isEmpty()
+                    | !m.matches()) {
                 Alert alert = new Alert(AlertType.WARNING);
-                alert.setTitle("Validate Fields");
+                alert.setTitle("Error in Validating Fields");
                 alert.setHeaderText(null);
-                alert.setContentText("Empty Fields");
+                alert.setContentText("Please make sure your fields are not empty and that your password is 8 or more characters, has a number, a lowercase letter, an uppercase letter, and a special character.");
                 alert.showAndWait();
             } else {
 
@@ -224,6 +230,7 @@ public class CapstoneWeek1 extends Application {
                 } catch (SQLException ex) {
                     Logger.getLogger(CapstoneWeek1.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                
             }
             
             
