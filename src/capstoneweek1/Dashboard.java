@@ -73,6 +73,7 @@ public class Dashboard {
         Button homeButton = new Button();
         Button btnViewFollower = new Button("View Profile");
         Button btnViewFollowing = new Button("View Profile");
+        //Button btnLogout = new Button("Logout");
 
         homeButton.setGraphic(homeView);
         //vbox for holding name over current game
@@ -92,7 +93,7 @@ public class Dashboard {
 
         Image tableExample = new Image("sampleTable.png");
         ImageView tableView = new ImageView(tableExample);
-        profilePicView.setPreserveRatio(true);
+        profilePicView.setPreserveRatio(true);       
         VBox leftVbox = new VBox();
         Text bioLabel = new Text("\tUser Biography");
         bioLabel.setStyle("-fx-font: 24 arial;");
@@ -108,6 +109,20 @@ public class Dashboard {
                 btnLabel1.setText("Functionality coming soon.");
             }
         });
+        
+        //Logout Button
+        Button btnLogout = new Button("Logout");
+        //Text btnLabel3 = new Text("");
+        btnLogout.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                dashboardStage.close();
+
+            //Code for returning to the login page will go here
+            }
+        });
+        
+ 
         Text tab2 = new Text("\t   ");
         HBox table = new HBox();
         table.getChildren().addAll(tab2, tableView);
@@ -116,7 +131,7 @@ public class Dashboard {
         btn.getChildren().addAll(tab3, btnAddGame);
         Separator horizSep = new Separator();
         horizSep.setOrientation(Orientation.HORIZONTAL);
-        leftVbox.getChildren().addAll(topPane, bioLabel, userBio, cLabel, table, btn, btnLabel1);
+        leftVbox.getChildren().addAll(topPane, bioLabel, btnLogout, userBio, cLabel, table, btn, btnLabel1);
         leftVbox.setAlignment(Pos.TOP_LEFT);
         leftVbox.setSpacing(10);
 
