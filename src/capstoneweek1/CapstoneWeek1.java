@@ -145,6 +145,7 @@ public class CapstoneWeek1 extends Application {
         Label lbDob = new Label("Enter Birthday (ex 1990-01-31)");
         Label lbBio = new Label("Bio");
         Button btnCreateAccountNew = new Button("Create Account");
+        Button btnExit = new Button("Exit");
 
         Stage createAccountStage = new Stage();
         //sets title at top of window
@@ -177,7 +178,7 @@ public class CapstoneWeek1 extends Application {
         gridpane.add(lbDob, 0, 6);
         gridpane.add(dpDob, 1, 6);
 
-        vBox.getChildren().addAll(gridpane, lbBio, tfBio, btnCreateAccountNew);
+        vBox.getChildren().addAll(gridpane, lbBio, tfBio, btnCreateAccountNew, btnExit);
 
         vBox.setAlignment(Pos.CENTER);
         vBox.setSpacing(10);
@@ -233,9 +234,13 @@ public class CapstoneWeek1 extends Application {
                 
             }
             
-            
-
         });
+
+//closes the create account page and returns to login page
+        btnExit.setOnAction((javafx.event.ActionEvent e) -> {createAccountStage.close();
+            
+        });
+    
     }
 
     public void loginError() {
