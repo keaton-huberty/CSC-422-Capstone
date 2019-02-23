@@ -199,6 +199,10 @@ public class CapstoneWeek1 extends Application {
 //validates password using regex to require a number, a lowercase letter, an uppercase letter, a special character (!@#$%^&+=), and has to be 8 characters or more).
             Pattern p = Pattern.compile("((?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&+=]).{8,})");
             Matcher m = p.matcher(tfPassword1.getText());
+
+//confirming that both password fields match            
+            String pwd = tfPassword1.getText();
+            String confpwd = tfPassword2.getText();
             
             if (tfUsernameNew.getText().isEmpty()
                     | tfFirstName.getText().isEmpty()
@@ -213,27 +217,36 @@ public class CapstoneWeek1 extends Application {
                 alert.showAndWait();
             } else {
 
-                System.out.println("Test create new account!");
-                DBUtility dbNewAccount = new DBUtility();
-                try {
-                    dbNewAccount.dbConnect();
+//verifying that the password matches in order to create the account
+                if (pwd.equals(confpwd)) {
+                
+                    System.out.println("Test create new account!");
+                    DBUtility dbNewAccount = new DBUtility();
+                    try {
+                        dbNewAccount.dbConnect();
                 } catch (SQLException ex) {
-                    Logger.getLogger(CapstoneWeek1.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(CapstoneWeek1.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
                 try {
-                    dbNewAccount.createNewAccount(tfUsernameNew.getText(), tfPassword1.getText(), tfFirstName.getText(), tfLastName.getText(), tfEmail.getText(), dpDob.getValue(), tfBio.getText());
+                        dbNewAccount.createNewAccount(tfUsernameNew.getText(), tfPassword1.getText(), tfFirstName.getText(), tfLastName.getText(), tfEmail.getText(), dpDob.getValue(), tfBio.getText());
                 } catch (SQLException ex) {
-                    Logger.getLogger(CapstoneWeek1.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(CapstoneWeek1.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 try {
-                    dbNewAccount.dbClose();
+                        dbNewAccount.dbClose();
                 } catch (SQLException ex) {
-                    Logger.getLogger(CapstoneWeek1.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(CapstoneWeek1.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 
-            }
-            
+            }else{
+                    Alert alert = new Alert(AlertType.WARNING);
+                    alert.setTitle("Error in Password Fields");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Please make sure your passwords match.");
+                    alert.showAndWait();
+                };
+            }  
         });
 
 //closes the create account page and returns to login page
