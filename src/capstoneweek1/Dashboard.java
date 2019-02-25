@@ -78,7 +78,9 @@ public class Dashboard {
         homeButton.setGraphic(homeView);
         //vbox for holding name over current game
         VBox nameAndGame = new VBox();
-        Text name = new Text(fName + " " + lName);
+        TextField name = new TextField(fName + " " + lName);
+        name.setDisable(true);
+        
         name.setStyle("-fx-font: 24 arial;");
         Text currentGame = new Text("Now Playing: Call of Duty: Modern Warfare 2");
         currentGame.setStyle("fx-font: 16 arial;");
@@ -97,11 +99,52 @@ public class Dashboard {
         VBox leftVbox = new VBox();
         Text bioLabel = new Text("\tUser Biography");
         bioLabel.setStyle("-fx-font: 24 arial;");
-        Text userBio = new Text(bio);
+        
+        TextField userBio = new TextField(bio);
+        userBio.setDisable(true);
+        
         userBio.setStyle("-fx-font: 18 arial;");
         Text cLabel = new Text("\tGames I Play");
         cLabel.setStyle("-fx-font: 24 arial;");
         Button btnAddGame = new Button("Add Game");
+        
+        
+        Button editInfo = new Button("Edit Info");
+        Button updateInfo = new Button("Update Info");
+        updateInfo.setVisible(false);
+        
+        //setting listner on edit info
+        editInfo.setOnAction((javafx.event.ActionEvent e) -> {
+            name.setDisable(false);
+            userBio.setDisable(false);
+            updateInfo.setVisible(true);
+            editInfo.setVisible(false);
+            
+        });
+        
+        //setting listner on update button
+        updateInfo.setOnAction((javafx.event.ActionEvent e) -> {
+            name.setDisable(true);
+            userBio.setDisable(true);
+            updateInfo.setVisible(false);
+            editInfo.setVisible(true);
+            
+            String name1=name.getText();
+            String bio=userBio.getText();
+            
+            DBUtility dbobj=new DBUtility();
+            
+            try {
+                dbobj.updateInfo(userName, name1, bio);
+                Alert alert = new Alert(AlertType.INFORMATION, "Info Updated!", ButtonType.OK);
+                alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+                alert.show();
+            } catch (SQLException ex) {
+                Logger.getLogger(Dashboard.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+        });
+        ///
         Text btnLabel1 = new Text("");
         btnAddGame.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -128,7 +171,7 @@ public class Dashboard {
         table.getChildren().addAll(tab2, tableView);
         Text tab3 = new Text("\t   ");
         HBox btn = new HBox();
-        btn.getChildren().addAll(tab3, btnAddGame);
+        btn.getChildren().addAll(tab3, btnAddGame,editInfo,updateInfo);
         Separator horizSep = new Separator();
         horizSep.setOrientation(Orientation.HORIZONTAL);
         leftVbox.getChildren().addAll(topPane, bioLabel, btnLogout, userBio, cLabel, table, btn, btnLabel1);
@@ -156,9 +199,18 @@ public class Dashboard {
 
         Text lable = new Text("Received Msgs");
         //send button
-        Button sendButton = new Button("Send");
-        //making a text area
-        TextArea textArea = TextAreaBuilder.create()
+        Button sendButton= new Button("Send");
+        //refresh button
+        Button refreshButton= new Button("Refresh");
+//        refreshButton.setVisible(false);
+        //del button
+        Button delButton= new Button("Delete All");
+        
+        //creating Hbox for buttons paralel to each other
+        HBox buttons = new HBox();
+        buttons.getChildren().addAll(sendButton,refreshButton,delButton);
+         //making a text area
+         TextArea textArea = TextAreaBuilder.create()
                 .prefWidth(100)
                 .wrapText(true)
                 .build();
@@ -233,12 +285,68 @@ public class Dashboard {
                 Alert alert = new Alert(AlertType.INFORMATION, "Message Sent!", ButtonType.OK);
                 alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
                 alert.show();
-
+                refreshButton.fire();//calling refresh button to auto refresh msgs after sending
+                
             } catch (SQLException ex) {
                 Logger.getLogger(Dashboard.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
-
+        //action listner of refresh button  
+        refreshButton.setOnAction((javafx.event.ActionEvent e) -> {
+            //setting text in msg box for recieved msg
+        ResultSet msgs = null;
+        ResultSet msgs1 = null;
+            try {
+                msgs = dbobj.getMsg(userName);
+                msgs1 = dbobj.getMsg(userName);//second Resultset for checking if theres no msg
+            } catch (SQLException ex) {
+                Logger.getLogger(Dashboard.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            
+            //for empty msgs
+            try {
+                if(msgs1.next()==false){
+                    textArea.setText("");
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(Dashboard.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        String setText="";
+       
+            try {
+                while(msgs.next()){
+                    //setting msgs into the text box
+                    String from=msgs.getString("msgSender");
+                    String msgContent=msgs.getString("msgContent");
+                    
+                    setText=setText+"From "+from+":\n"+msgContent+"\n";
+                    textArea.setText(setText);
+                    
+                    
+                    
+                } 
+            } catch (SQLException ex) {
+                Logger.getLogger(Dashboard.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            
+        });
+        //adding listener to delete btn
+        delButton.setOnAction((javafx.event.ActionEvent e) -> { 
+            try {
+                
+                dbobj.deleteMsgs(userName);
+                
+                refreshButton.fire();//calling refresh button listener after deleting msgs
+                
+            } catch (SQLException ex) {
+                System.out.println("3");
+                Logger.getLogger(Dashboard.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+        });
+    
         //setting text in msg box for recieved msg
         ResultSet msgs = dbobj.getMsg(userName);
         String setText = "";
@@ -306,7 +414,7 @@ public class Dashboard {
         searchBox.setSpacing(20);
         //set search bar default value
         search.setPromptText("Find User");
-        rightVbox.getChildren().addAll(searchBox, btnViewFollowing, flLabel, friendsList, btnViewFollower, friends1, lable, scrollPane, msgType, sendButton);
+        rightVbox.getChildren().addAll( searchBox, flLabel, friendsList, friends1, lable,scrollPane,msgType,buttons);
 
         //set up bottom pane
         Text bottomText = new Text("Created by Keaton, Will, Mike, and Amin (2019)");
@@ -412,5 +520,6 @@ public class Dashboard {
         bPane.setStyle("-fx-background-color: #DCDCDC;");
 
     }
+
 
 }
