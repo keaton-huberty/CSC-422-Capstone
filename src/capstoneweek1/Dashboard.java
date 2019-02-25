@@ -231,10 +231,10 @@ public class Dashboard {
         //set up list to hold followers
         ListView friendsList = new ListView();
         DBUtility dbobj = new DBUtility();
-        ResultSet userFriends = dbobj.getFriends();
+        ResultSet userFriends = dbobj.getFollowers(userName);
         while (userFriends.next()) {
             friendsList.getItems().add(
-                    userFriends.getString("userName")//adding users in drop down from database
+                    userFriends.getString("followingName")//adding users in drop down from database
             );
 
         }
