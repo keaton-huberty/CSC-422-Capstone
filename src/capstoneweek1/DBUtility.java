@@ -85,12 +85,12 @@ public class DBUtility {
         return resultSet;
     }
     
-        public ResultSet getFriends() throws SQLException {
+        public ResultSet getFollowers(String userName) throws SQLException {
         dbConnect();
         //first have to creat a statement
         stmt = conn.createStatement();
         // this runs the SQL query - notice the extra single quotes around the string.  Don't forget those.
-        resultSet = stmt.executeQuery("SELECT userName FROM userLogin");
+        resultSet = stmt.executeQuery("SELECT followingName FROM Followers WHERE userName = '" + userName + "'");
         return resultSet;
     }
         
