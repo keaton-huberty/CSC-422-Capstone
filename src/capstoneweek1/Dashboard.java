@@ -56,6 +56,7 @@ public class Dashboard {
     public void launchDashboard() throws SQLException {
 
         Stage dashboardStage = new Stage();
+        
         //sets title at top of window
         dashboardStage.setTitle("SocialGamer Pro");
 
@@ -194,7 +195,7 @@ public class Dashboard {
         btnVbox.getChildren().addAll(btnMessages, btnLabel2);
         VBox rightVbox = new VBox();
         rightVbox.setSpacing(10);
-        Text flLabel = new Text("Followers");
+        Text flLabel = new Text("Following");
         flLabel.setStyle("-fx-font: 24 arial;");
 
         Text lable = new Text("Received Msgs");
@@ -238,6 +239,7 @@ public class Dashboard {
             );
 
         }
+        friendsList.setPrefHeight(140);
         //setting place holder
         msgType.setPromptText("Type Msg here");
 
@@ -425,9 +427,11 @@ public class Dashboard {
         bPane.setBottom(bottomText);
         bPane.setLeft(leftVbox);
 
-        //width, height of actual scene
+        //width, height of actual 
         Scene dashboard = new Scene(bPane, 1100, 650);
-
+        
+        dashboard.getStylesheets().add(CapstoneWeek1.class.getResource("SocialGamerStyle.css").toExternalForm());
+        
         dashboardStage.setScene(dashboard);
         dashboardStage.setMinHeight(650);
         dashboardStage.setMinWidth(1350);
