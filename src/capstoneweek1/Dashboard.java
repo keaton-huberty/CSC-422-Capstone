@@ -414,7 +414,7 @@ public class Dashboard {
         searchBox.setSpacing(20);
         //set search bar default value
         search.setPromptText("Find User");
-        rightVbox.getChildren().addAll( searchBox, flLabel, friendsList, friends1, lable,scrollPane,msgType,buttons);
+        rightVbox.getChildren().addAll( searchBox, btnViewFollowing, flLabel, friendsList, btnViewFollower, friends1, lable,scrollPane,msgType,buttons);
 
         //set up bottom pane
         Text bottomText = new Text("Created by Keaton, Will, Mike, and Amin (2019)");
@@ -511,8 +511,8 @@ public class Dashboard {
         Scene friendDashboard = new Scene(bPane, 1100, 650);
 
         dashboardStage.setScene(friendDashboard);
-        dashboardStage.setMinHeight(650);
-        dashboardStage.setMinWidth(1350);
+        dashboardStage.setMinHeight(450);
+        dashboardStage.setMinWidth(550);
 
         //primaryStage.close();
         dashboardStage.show();
