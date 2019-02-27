@@ -7,6 +7,7 @@ package capstoneweek1;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,8 +44,10 @@ import javafx.stage.Stage;
 public class Dashboard {
 
     private String userName, fName, lName, bio;
+    private int userID;
 
-    public Dashboard(String userName, String fName, String lName, String bio) {
+    public Dashboard(int userID, String userName, String fName, String lName, String bio) {
+        this.userID = userID;
         this.userName = userName;
         this.fName = fName;
         this.lName = lName;
@@ -56,7 +59,7 @@ public class Dashboard {
     public void launchDashboard() throws SQLException {
 
         Stage dashboardStage = new Stage();
-        
+
         //sets title at top of window
         dashboardStage.setTitle("SocialGamer Pro");
 
@@ -81,7 +84,7 @@ public class Dashboard {
         VBox nameAndGame = new VBox();
         TextField name = new TextField(fName + " " + lName);
         name.setDisable(true);
-        
+
         name.setStyle("-fx-font: 24 arial;");
         Text currentGame = new Text("Now Playing: Call of Duty: Modern Warfare 2");
         currentGame.setStyle("fx-font: 16 arial;");
@@ -96,45 +99,44 @@ public class Dashboard {
 
         Image tableExample = new Image("sampleTable.png");
         ImageView tableView = new ImageView(tableExample);
-        profilePicView.setPreserveRatio(true);       
+        profilePicView.setPreserveRatio(true);
         VBox leftVbox = new VBox();
         Text bioLabel = new Text("\tUser Biography");
         bioLabel.setStyle("-fx-font: 24 arial;");
-        
+
         TextField userBio = new TextField(bio);
         userBio.setDisable(true);
-        
+
         userBio.setStyle("-fx-font: 18 arial;");
         Text cLabel = new Text("\tGames I Play");
         cLabel.setStyle("-fx-font: 24 arial;");
         Button btnAddGame = new Button("Add Game");
-        
-        
+
         Button editInfo = new Button("Edit Info");
         Button updateInfo = new Button("Update Info");
         updateInfo.setVisible(false);
-        
+
         //setting listner on edit info
         editInfo.setOnAction((javafx.event.ActionEvent e) -> {
             name.setDisable(false);
             userBio.setDisable(false);
             updateInfo.setVisible(true);
             editInfo.setVisible(false);
-            
+
         });
-        
+
         //setting listner on update button
         updateInfo.setOnAction((javafx.event.ActionEvent e) -> {
             name.setDisable(true);
             userBio.setDisable(true);
             updateInfo.setVisible(false);
             editInfo.setVisible(true);
-            
-            String name1=name.getText();
-            String bio=userBio.getText();
-            
-            DBUtility dbobj=new DBUtility();
-            
+
+            String name1 = name.getText();
+            String bio = userBio.getText();
+
+            DBUtility dbobj = new DBUtility();
+
             try {
                 dbobj.updateInfo(userName, name1, bio);
                 Alert alert = new Alert(AlertType.INFORMATION, "Info Updated!", ButtonType.OK);
@@ -143,7 +145,7 @@ public class Dashboard {
             } catch (SQLException ex) {
                 Logger.getLogger(Dashboard.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
+
         });
         ///
         Text btnLabel1 = new Text("");
@@ -153,7 +155,7 @@ public class Dashboard {
                 btnLabel1.setText("Functionality coming soon.");
             }
         });
-        
+
         //Logout Button
         Button btnLogout = new Button("Logout");
         //Text btnLabel3 = new Text("");
@@ -162,17 +164,16 @@ public class Dashboard {
             public void handle(ActionEvent e) {
                 dashboardStage.close();
 
-            //Code for returning to the login page will go here
+                //Code for returning to the login page will go here
             }
         });
-        
- 
+
         Text tab2 = new Text("\t   ");
         HBox table = new HBox();
         table.getChildren().addAll(tab2, tableView);
         Text tab3 = new Text("\t   ");
         HBox btn = new HBox();
-        btn.getChildren().addAll(tab3, btnAddGame,editInfo,updateInfo);
+        btn.getChildren().addAll(tab3, btnAddGame, editInfo, updateInfo);
         Separator horizSep = new Separator();
         horizSep.setOrientation(Orientation.HORIZONTAL);
         leftVbox.getChildren().addAll(topPane, bioLabel, btnLogout, userBio, cLabel, table, btn, btnLabel1);
@@ -200,18 +201,18 @@ public class Dashboard {
 
         Text lable = new Text("Received Msgs");
         //send button
-        Button sendButton= new Button("Send");
+        Button sendButton = new Button("Send");
         //refresh button
-        Button refreshButton= new Button("Refresh");
+        Button refreshButton = new Button("Refresh");
 //        refreshButton.setVisible(false);
         //del button
-        Button delButton= new Button("Delete All");
-        
+        Button delButton = new Button("Delete All");
+
         //creating Hbox for buttons paralel to each other
         HBox buttons = new HBox();
-        buttons.getChildren().addAll(sendButton,refreshButton,delButton);
-         //making a text area
-         TextArea textArea = TextAreaBuilder.create()
+        buttons.getChildren().addAll(sendButton, refreshButton, delButton);
+        //making a text area
+        TextArea textArea = TextAreaBuilder.create()
                 .prefWidth(100)
                 .wrapText(true)
                 .build();
@@ -288,7 +289,7 @@ public class Dashboard {
                 alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
                 alert.show();
                 refreshButton.fire();//calling refresh button to auto refresh msgs after sending
-                
+
             } catch (SQLException ex) {
                 Logger.getLogger(Dashboard.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -296,59 +297,55 @@ public class Dashboard {
         //action listner of refresh button  
         refreshButton.setOnAction((javafx.event.ActionEvent e) -> {
             //setting text in msg box for recieved msg
-        ResultSet msgs = null;
-        ResultSet msgs1 = null;
+            ResultSet msgs = null;
+            ResultSet msgs1 = null;
             try {
                 msgs = dbobj.getMsg(userName);
                 msgs1 = dbobj.getMsg(userName);//second Resultset for checking if theres no msg
             } catch (SQLException ex) {
                 Logger.getLogger(Dashboard.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
-            
+
             //for empty msgs
             try {
-                if(msgs1.next()==false){
+                if (msgs1.next() == false) {
                     textArea.setText("");
                 }
             } catch (SQLException ex) {
                 Logger.getLogger(Dashboard.class.getName()).log(Level.SEVERE, null, ex);
             }
-        String setText="";
-       
+            String setText = "";
+
             try {
-                while(msgs.next()){
+                while (msgs.next()) {
                     //setting msgs into the text box
-                    String from=msgs.getString("msgSender");
-                    String msgContent=msgs.getString("msgContent");
-                    
-                    setText=setText+"From "+from+":\n"+msgContent+"\n";
+                    String from = msgs.getString("msgSender");
+                    String msgContent = msgs.getString("msgContent");
+
+                    setText = setText + "From " + from + ":\n" + msgContent + "\n";
                     textArea.setText(setText);
-                    
-                    
-                    
-                } 
+
+                }
             } catch (SQLException ex) {
                 Logger.getLogger(Dashboard.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
-            
+
         });
         //adding listener to delete btn
-        delButton.setOnAction((javafx.event.ActionEvent e) -> { 
+        delButton.setOnAction((javafx.event.ActionEvent e) -> {
             try {
-                
+
                 dbobj.deleteMsgs(userName);
-                
+
                 refreshButton.fire();//calling refresh button listener after deleting msgs
-                
+
             } catch (SQLException ex) {
                 System.out.println("3");
                 Logger.getLogger(Dashboard.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
+
         });
-    
+
         //setting text in msg box for recieved msg
         ResultSet msgs = dbobj.getMsg(userName);
         String setText = "";
@@ -379,11 +376,11 @@ public class Dashboard {
                 Logger.getLogger(Dashboard.class.getName()).log(Level.SEVERE, null, ex);
             }
             try {
-                
+
                 String friendName = friendsList.getSelectionModel().getSelectedItems().toString();
                 friendName = friendName.substring(1, friendName.length() - 1);
                 User user = new User(db.getUserInfo(friendName));
-                user.getDashboard().friendDashboard();
+                user.getDashboard().friendDashboard(this.userName, this.userID);
                 db.dbClose();
             } catch (SQLException ex) {
                 Logger.getLogger(Dashboard.class.getName()).log(Level.SEVERE, null, ex);
@@ -404,7 +401,7 @@ public class Dashboard {
                 //String friendName = friendsList.getSelectionModel().getSelectedItems().toString();
                 //friendName = friendName.substring(1, friendName.length() - 1);
                 User user = new User(db.getUserInfo(friendName));
-                user.getDashboard().friendDashboard();
+                user.getDashboard().friendDashboard(this.userName, this.userID);
                 db.dbClose();
             } catch (SQLException ex) {
                 Logger.getLogger(Dashboard.class.getName()).log(Level.SEVERE, null, ex);
@@ -416,7 +413,7 @@ public class Dashboard {
         searchBox.setSpacing(20);
         //set search bar default value
         search.setPromptText("Find User");
-        rightVbox.getChildren().addAll( searchBox, btnViewFollowing, flLabel, friendsList, btnViewFollower, friends1, lable,scrollPane,msgType,buttons);
+        rightVbox.getChildren().addAll(searchBox, btnViewFollowing, flLabel, friendsList, btnViewFollower, friends1, lable, scrollPane, msgType, buttons);
 
         //set up bottom pane
         Text bottomText = new Text("Created by Keaton, Will, Mike, and Amin (2019)");
@@ -429,9 +426,9 @@ public class Dashboard {
 
         //width, height of actual 
         Scene dashboard = new Scene(bPane, 1100, 650);
-        
+
         dashboard.getStylesheets().add(CapstoneWeek1.class.getResource("SocialGamerStyle.css").toExternalForm());
-        
+
         dashboardStage.setScene(dashboard);
         dashboardStage.setMinHeight(650);
         dashboardStage.setMinWidth(1350);
@@ -443,7 +440,7 @@ public class Dashboard {
 
     }
 
-    public void friendDashboard() throws SQLException {
+    public void friendDashboard(String rootUserName, int rootUserID) throws SQLException {
 
         Stage dashboardStage = new Stage();
         //sets title at top of window
@@ -462,6 +459,9 @@ public class Dashboard {
         homeView.setFitHeight(20);
         Button homeButton = new Button();
 
+        //FollowButton
+        Button btnFollow = new Button("Follow");
+
         homeButton.setGraphic(homeView);
         //vbox for holding name over current game
         VBox nameAndGame = new VBox();
@@ -469,7 +469,7 @@ public class Dashboard {
         name.setStyle("-fx-font: 24 arial;");
         Text currentGame = new Text("Now Playing: Call of Duty: Modern Warfare 2");
         currentGame.setStyle("fx-font: 16 arial;");
-        nameAndGame.getChildren().addAll(name, currentGame);
+        nameAndGame.getChildren().addAll(name, currentGame, btnFollow);
         //flow pane for holding picture, name/game, and messages button
         FlowPane topPane = new FlowPane();
         Text tab = new Text("\t   ");
@@ -505,6 +505,45 @@ public class Dashboard {
         //set up bottom pane
         Text bottomText = new Text("Created by Keaton, Will, Mike, and Amin (2019)");
 
+        
+        //Checking to see if user is following clicked page
+        //If they are already following, then the follow button will say "Following"
+        DBUtility db = new DBUtility();
+        try {
+            db.dbConnect();
+            ResultSet resultSet = db.getFollowers(rootUserName);
+            while (resultSet.next()) {
+                System.out.println("UserName check: " + rootUserName);
+                System.out.println(resultSet.getString("FollowingName"));
+                String nameCheck = resultSet.getString("FollowingName");
+                if (nameCheck.equals(this.userName)) {
+                    btnFollow.setText("Following");
+                }
+
+            }
+            db.dbClose();
+        } catch (SQLException ex) {
+            Logger.getLogger(Dashboard.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
+        //Follow button will insert follower into Followers Table if the button text equals "Follow"
+        btnFollow.setOnAction((javafx.event.ActionEvent e) -> {
+            //DBUtility db = new DBUtility();
+            if(btnFollow.getText().equals("Follow")){
+                try {
+                    db.dbConnect();
+                    db.addFollow(rootUserName, this.userName, rootUserID, this.userID);
+                    btnFollow.setText("Following");
+                    
+                } catch (SQLException ex) {
+                    Logger.getLogger(Dashboard.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            
+
+        });
+
         //create border pane with each part as set up above
         BorderPane bPane = new BorderPane();
         // bPane.setRight(rightVbox);
@@ -524,6 +563,5 @@ public class Dashboard {
         bPane.setStyle("-fx-background-color: #DCDCDC;");
 
     }
-
 
 }
