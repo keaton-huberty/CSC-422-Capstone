@@ -15,7 +15,7 @@ import javafx.scene.image.Image;
  */
 public class User {
 
-
+    private int userID;
     private String userName;
     private String email;
     private String fName;
@@ -86,12 +86,13 @@ public class User {
 
     public User(ResultSet userInfo) throws SQLException {
         if (userInfo.next()) {
+            this.userID = userInfo.getInt("userID");
             this.userName = userInfo.getString("userName");
             this.fName = userInfo.getString("firstName");
             this.lName = userInfo.getString("lastName");
             this.bio = userInfo.getString("Bio");
         }       
-        this.dashboard = new Dashboard(userName,fName, lName, bio);
+        this.dashboard = new Dashboard(userID, userName,fName, lName, bio);
     }
 
 }
