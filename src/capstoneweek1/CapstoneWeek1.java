@@ -3,6 +3,9 @@ Capstone Team 1n
  */
 package capstoneweek1;
 
+import java.awt.Desktop;
+import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -10,6 +13,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -26,6 +31,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 
 /**
@@ -43,6 +50,12 @@ public class CapstoneWeek1 extends Application {
     private final ImageView imgViewLogo = new ImageView();
     private final Image imgLogo = new Image("background.png");
     private final Label wrongLogin = new Label("");
+    
+    private FileChooser fileChooser;
+    private File file;
+    private Desktop desktop = Desktop.getDesktop();
+    //private ImageView imgProfile = new ImageView();
+    private Image image;
     
 
     // New comment to test pushing to GitHub
@@ -112,7 +125,7 @@ public class CapstoneWeek1 extends Application {
             }
 
         });
-
+        
         btnCreateAccount.setOnAction((javafx.event.ActionEvent e) -> {
 
             createAccountWindow();
@@ -146,6 +159,15 @@ public class CapstoneWeek1 extends Application {
         Label lbBio = new Label("Bio");
         Button btnCreateAccountNew = new Button("Create Account");
         Button btnExit = new Button("Exit");
+        Button btnBrowse = new Button("Browse");
+        Label lbBrowsePath = new Label ("");
+        ImageView imgProfile = new ImageView(image);
+        
+//Allows you to select an Image File
+        fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().addAll(
+                new ExtensionFilter("Image Files", "*.jpg","*.png","*.gif")
+        );
 
         Stage createAccountStage = new Stage();
         //sets title at top of window
@@ -178,7 +200,7 @@ public class CapstoneWeek1 extends Application {
         gridpane.add(lbDob, 0, 6);
         gridpane.add(dpDob, 1, 6);
 
-        vBox.getChildren().addAll(gridpane, lbBio, tfBio, btnCreateAccountNew, btnExit);
+        vBox.getChildren().addAll(gridpane, lbBrowsePath, btnBrowse, imgProfile, lbBio, tfBio, btnCreateAccountNew, btnExit);
 
         vBox.setAlignment(Pos.CENTER);
         vBox.setSpacing(10);
@@ -252,6 +274,27 @@ public class CapstoneWeek1 extends Application {
 //closes the create account page and returns to login page
         btnExit.setOnAction((javafx.event.ActionEvent e) -> {createAccountStage.close();
             
+        });
+        
+        btnBrowse.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(javafx.event.ActionEvent e) {
+                file = fileChooser.showOpenDialog(createAccountStage);
+                if(file != null){
+                    //desktop.open(file);
+                    lbBrowsePath.setText(file.getAbsolutePath());
+                    //image = new Image(path, width, height, preserved ratio, smooth);
+                    image = new Image(file.toURI().toString(), 100, 150, true, true);
+                    imgProfile.setImage(image);
+                    imgProfile.setFitWidth(100);
+                    imgProfile.setFitHeight(150);
+                    imgProfile.setPreserveRatio(true);
+                    
+                    //layout.setCenter(imgProfile);
+                    //BorderPane.setAlignment(imgPro, Pos.TOP_LEFT);
+                    
+                }
+            }
         });
     
     }
