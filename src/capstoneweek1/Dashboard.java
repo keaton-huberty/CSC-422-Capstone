@@ -71,7 +71,7 @@ public class Dashboard {
         profilePicView.setFitHeight(150);
 
         Button btnViewFollower = new Button("View Profile");
-        Button btnViewFollowing = new Button("View Profile");
+        Button btnViewFollowing = new Button("Search User");
         //Button btnLogout = new Button("Logout");
 
         //vbox for holding name over current game
@@ -354,14 +354,17 @@ public class Dashboard {
 
         }
         //set up search bar for finding users
-        ComboBox search = new ComboBox();
+        ComboBox search = new ComboBox(); 
+        search.setEditable(true);
         ResultSet searchUsers = dbobj.getUsers();
         while (searchUsers.next()) {
             search.getItems().addAll(
                     searchUsers.getString("userName")
             );
         }
-
+        
+        
+        
         btnViewFollower.setOnAction((javafx.event.ActionEvent e) -> {
             DBUtility db = new DBUtility();
             try {
@@ -403,11 +406,11 @@ public class Dashboard {
 
         });
 
-        HBox searchBox = new HBox(search);
+        HBox searchBox = new HBox(search, btnViewFollowing);
         searchBox.setSpacing(20);
         //set search bar default value
-        search.setPromptText("Find User");
-        rightVbox.getChildren().addAll(searchBox, btnViewFollowing, flLabel, friendsList, btnViewFollower, friends1, lable, scrollPane, msgType, buttons);
+        search.setPromptText("Username");
+        rightVbox.getChildren().addAll(searchBox, flLabel, friendsList, btnViewFollower, friends1, lable, scrollPane, msgType, buttons);
 
         //set up bottom pane
         Text bottomText = new Text("Created by Keaton, Will, Mike, and Amin (2019)");
