@@ -69,17 +69,11 @@ public class Dashboard {
         ImageView profilePicView = new ImageView(profilePic);
         profilePicView.setPreserveRatio(true);
         profilePicView.setFitHeight(150);
-        //setup home button icon
-        Image homeIcon = new Image("home.png");
-        ImageView homeView = new ImageView(homeIcon);
-        homeView.setPreserveRatio(true);
-        homeView.setFitHeight(20);
-        Button homeButton = new Button();
+
         Button btnViewFollower = new Button("View Profile");
         Button btnViewFollowing = new Button("View Profile");
         //Button btnLogout = new Button("Logout");
 
-        homeButton.setGraphic(homeView);
         //vbox for holding name over current game
         VBox nameAndGame = new VBox();
         TextField name = new TextField(fName + " " + lName);
@@ -409,7 +403,7 @@ public class Dashboard {
 
         });
 
-        HBox searchBox = new HBox(search, homeButton);
+        HBox searchBox = new HBox(search);
         searchBox.setSpacing(20);
         //set search bar default value
         search.setPromptText("Find User");
