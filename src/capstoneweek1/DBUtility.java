@@ -68,11 +68,11 @@ public class DBUtility {
         return resultSet;
     }
 
-    public void createNewAccount(String userName, String password, String firstName, String lastName, String email, LocalDate dob, String bio) throws SQLException {
+    public void createNewAccount(String userName, String password, String firstName, String lastName, String email, LocalDate dob, String imagePath, String bio) throws SQLException {
 
         stmt = conn.createStatement();
         // this runs the SQL query - notice the extra single quotes around the string.  Don't forget those.
-        stmt.executeUpdate("INSERT INTO `userLogin`(`userName`, `userPassword`, `Email`, `Dob`, `Image`, `firstName`, `lastName`, `Bio`) VALUES ('" + userName + "','" + password + "','" + email + "','" + dob + "' ,null,'" + firstName + "','" + lastName + "','" + bio + "')");
+        stmt.executeUpdate("INSERT INTO `userLogin`(`userName`, `userPassword`, `Email`, `Dob`, `Image`, `firstName`, `lastName`, `Bio`) VALUES ('" + userName + "','" + password + "','" + email + "','" + dob + "','" + imagePath + "','" + firstName + "','" + lastName + "','" + bio + "')");
 
     }
 

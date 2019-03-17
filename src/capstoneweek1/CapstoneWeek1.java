@@ -5,7 +5,11 @@ package capstoneweek1;
 
 import java.awt.Desktop;
 import java.io.File;
-import java.io.IOException;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -56,8 +60,11 @@ public class CapstoneWeek1 extends Application {
     private Desktop desktop = Desktop.getDesktop();
     //private ImageView imgProfile = new ImageView();
     private Image image;
-    
-
+    //needed to pull picture as a blob into database
+    //private FileInputStream fis;
+    //private final PreparedStatement stmt = null;
+      
+  
     // New comment to test pushing to GitHub
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -236,7 +243,7 @@ public class CapstoneWeek1 extends Application {
                 alert.setTitle("Error in Validating Fields");
                 alert.setHeaderText(null);
                 alert.setContentText("Please make sure your fields are not empty and that your password is 8 or more characters, has a number, a lowercase letter, an uppercase letter, and a special character.");
-                alert.showAndWait();
+                alert.showAndWait();               
             } else {
 
 //verifying that the password matches in order to create the account
@@ -244,14 +251,29 @@ public class CapstoneWeek1 extends Application {
                 
                     System.out.println("Test create new account!");
                     DBUtility dbNewAccount = new DBUtility();
+                /*
+                    try {
+                    fis = new FileInputStream(file);
+                    stmt.setBinaryStream(1, (InputStream)fis, (int)file.length()); 
+                    
+                    //prepared statement?
+                    
+                    
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(CapstoneWeek1.class.getName()).log(Level.SEVERE, null, ex);
+                }   catch (SQLException ex) {
+                        Logger.getLogger(CapstoneWeek1.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    
+                */    
                     try {
                         dbNewAccount.dbConnect();
                 } catch (SQLException ex) {
                         Logger.getLogger(CapstoneWeek1.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
-                try {
-                        dbNewAccount.createNewAccount(tfUsernameNew.getText(), tfPassword1.getText(), tfFirstName.getText(), tfLastName.getText(), tfEmail.getText(), dpDob.getValue(), tfBio.getText());
+                    try {
+                        dbNewAccount.createNewAccount(tfUsernameNew.getText(), tfPassword1.getText(), tfFirstName.getText(), tfLastName.getText(), tfEmail.getText(), dpDob.getValue(), lbBrowsePath.getText(), tfBio.getText());
                 } catch (SQLException ex) {
                         Logger.getLogger(CapstoneWeek1.class.getName()).log(Level.SEVERE, null, ex);
                 }
