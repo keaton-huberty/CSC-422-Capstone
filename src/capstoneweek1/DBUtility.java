@@ -11,6 +11,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 /**
  *
@@ -23,6 +25,8 @@ public class DBUtility {
     private Connection conn = null;
     private Statement stmt = null;
     private ResultSet resultSet = null;
+
+    private ObservableList<GamePlayed> gamesPlayedList = FXCollections.observableArrayList();
 
     // dbConnect will connect to the database on the local host
     public void dbConnect() throws SQLException {
@@ -76,6 +80,32 @@ public class DBUtility {
 
     }
 
+    public void addGame(String gameTitle, int YearPublished, String genre) throws SQLException {
+
+        stmt = conn.createStatement();
+        // this runs the SQL query - notice the extra single quotes around the string.  Don't forget those.
+        stmt.executeUpdate("INSERT INTO `GamesLibrary`(`Title`, `YearPublished`, `Genre`) VALUES ('" + gameTitle + "','" + YearPublished + "','" + genre + "')");
+
+    }
+
+    public void addGameToUserList(String gameTitle, int userID) throws SQLException {
+        int gameID = 999999;
+
+        stmt = conn.createStatement();
+
+        resultSet = stmt.executeQuery("SELECT gameID FROM GamesLibrary WHERE title = '" + gameTitle + "'");
+        if (resultSet.next()) {
+            gameID = resultSet.getInt("gameID");
+        }
+//        System.out.println("Game title passed = " + gameTitle);
+//        System.out.println("gamesID = " + gameID);
+//        System.out.println("userID = " + userID);
+        stmt = conn.createStatement();
+
+        stmt.executeUpdate("INSERT INTO `GamesPlayed` (`userID`, `gameID`) VALUES ('" + userID + "','" + gameID + "')");
+
+    }
+
     //gets users for friends list, will eventually pull from follower table
     public ResultSet getUsers() throws SQLException {
         dbConnect();
@@ -95,7 +125,42 @@ public class DBUtility {
         return resultSet;
     }
 
-        //This method will insert a new entry into the followers table
+    public ResultSet getGamesLibrary() throws SQLException {
+
+        stmt = conn.createStatement();
+
+        resultSet = stmt.executeQuery("SELECT Title FROM GamesLibrary");
+
+        return resultSet;
+    }
+
+    public ObservableList<GamePlayed> getGamesPlayed(int userID) throws SQLException {
+        String gameTitle;
+        int year;
+        String genre;
+        stmt = conn.createStatement();
+
+        resultSet = stmt.executeQuery("SELECT Title, YearPublished, Genre "
+                + "FROM GamesLibrary JOIN GamesPlayed "
+                + "ON GamesLibrary.gameID = GamesPlayed.gameID "
+                + "WHERE GamesPlayed.userID = " + userID + " ORDER BY Title");
+
+        while (resultSet.next()) {
+            gameTitle = resultSet.getString("Title");
+            year = resultSet.getInt("YearPublished");
+            genre = resultSet.getString("Genre");
+            GamePlayed game = new GamePlayed(gameTitle, year, genre);
+//            System.out.println(game.getGameTitle());
+//            System.out.println(game.getYear());
+//            System.out.println(game.getGenre());
+//            System.out.println("GAME ADDED TO LIST");
+            gamesPlayedList.add(game);
+        }
+
+        return gamesPlayedList;
+    }
+
+    //This method will insert a new entry into the followers table
     public void addFollow(String userName, String followUser, int userID, int followID) throws SQLException {
         stmt = conn.createStatement();
         stmt.executeUpdate("INSERT INTO `Followers`(`userID`, `userName`, `followingID`, `followingName`) VALUES ('" + userID + "','" + userName + "','" + followID + "','" + followUser + "')");
