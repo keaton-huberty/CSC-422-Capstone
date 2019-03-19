@@ -7,10 +7,12 @@ import java.awt.Desktop;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -54,17 +56,17 @@ public class CapstoneWeek1 extends Application {
     private final ImageView imgViewLogo = new ImageView();
     private final Image imgLogo = new Image("background.png");
     private final Label wrongLogin = new Label("");
-    
+
     private FileChooser fileChooser;
     private File file;
     private Desktop desktop = Desktop.getDesktop();
     //private ImageView imgProfile = new ImageView();
     private Image image;
     //needed to pull picture as a blob into database
-    //private FileInputStream fis;
-    //private final PreparedStatement stmt = null;
-      
-  
+    private FileInputStream fis;
+    //private Statement stmt;
+    private final PreparedStatement stmt = null;
+
     // New comment to test pushing to GitHub
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -129,10 +131,12 @@ public class CapstoneWeek1 extends Application {
                 }
             } catch (SQLException ex) {
                 Logger.getLogger(CapstoneWeek1.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(CapstoneWeek1.class.getName()).log(Level.SEVERE, null, ex);
             }
 
         });
-        
+
         btnCreateAccount.setOnAction((javafx.event.ActionEvent e) -> {
 
             createAccountWindow();
@@ -167,13 +171,13 @@ public class CapstoneWeek1 extends Application {
         Button btnCreateAccountNew = new Button("Create Account");
         Button btnExit = new Button("Exit");
         Button btnBrowse = new Button("Browse");
-        Label lbBrowsePath = new Label ("");
+        Label lbBrowsePath = new Label("");
         ImageView imgProfile = new ImageView(image);
-        
+
 //Allows you to select an Image File
         fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().addAll(
-                new ExtensionFilter("Image Files", "*.jpg","*.png","*.gif")
+                new ExtensionFilter("Image Files", "*.jpg", "*.png", "*.gif")
         );
 
         Stage createAccountStage = new Stage();
@@ -232,7 +236,7 @@ public class CapstoneWeek1 extends Application {
 //confirming that both password fields match            
             String pwd = tfPassword1.getText();
             String confpwd = tfPassword2.getText();
-            
+
             if (tfUsernameNew.getText().isEmpty()
                     | tfFirstName.getText().isEmpty()
                     | tfLastName.getText().isEmpty()
@@ -243,82 +247,65 @@ public class CapstoneWeek1 extends Application {
                 alert.setTitle("Error in Validating Fields");
                 alert.setHeaderText(null);
                 alert.setContentText("Please make sure your fields are not empty and that your password is 8 or more characters, has a number, a lowercase letter, an uppercase letter, and a special character.");
-                alert.showAndWait();               
+                alert.showAndWait();
             } else {
 
 //verifying that the password matches in order to create the account
                 if (pwd.equals(confpwd)) {
-                
+
                     System.out.println("Test create new account!");
                     DBUtility dbNewAccount = new DBUtility();
-                /*
-                    try {
-                    fis = new FileInputStream(file);
-                    stmt.setBinaryStream(1, (InputStream)fis, (int)file.length()); 
-                    
-                    //prepared statement?
-                    
-                    
-                } catch (FileNotFoundException ex) {
-                    Logger.getLogger(CapstoneWeek1.class.getName()).log(Level.SEVERE, null, ex);
-                }   catch (SQLException ex) {
-                        Logger.getLogger(CapstoneWeek1.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    
-                */    
-                    try {
-                        dbNewAccount.dbConnect();
-                } catch (SQLException ex) {
-                        Logger.getLogger(CapstoneWeek1.class.getName()).log(Level.SEVERE, null, ex);
-                }
 
                     try {
-                        dbNewAccount.createNewAccount(tfUsernameNew.getText(), tfPassword1.getText(), tfFirstName.getText(), tfLastName.getText(), tfEmail.getText(), dpDob.getValue(), lbBrowsePath.getText(), tfBio.getText());
-                } catch (SQLException ex) {
+                        dbNewAccount.dbConnect();
+                    } catch (SQLException ex) {
                         Logger.getLogger(CapstoneWeek1.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                try {
+                    }
+
+                    try {
+                        dbNewAccount.createNewAccount(tfUsernameNew.getText(), tfPassword1.getText(), tfFirstName.getText(), tfLastName.getText(), tfEmail.getText(), dpDob.getValue(), file, tfBio.getText());
+                    } catch (SQLException | IOException ex) {
+                        Logger.getLogger(CapstoneWeek1.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    try {
                         dbNewAccount.dbClose();
-                } catch (SQLException ex) {
+                    } catch (SQLException ex) {
                         Logger.getLogger(CapstoneWeek1.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                
-            }else{
+                    }
+
+                } else {
                     Alert alert = new Alert(AlertType.WARNING);
                     alert.setTitle("Error in Password Fields");
                     alert.setHeaderText(null);
                     alert.setContentText("Please make sure your passwords match.");
                     alert.showAndWait();
-                };
-            }  
-        });
-
-//closes the create account page and returns to login page
-        btnExit.setOnAction((javafx.event.ActionEvent e) -> {createAccountStage.close();
-            
-        });
-        
-        btnBrowse.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(javafx.event.ActionEvent e) {
-                file = fileChooser.showOpenDialog(createAccountStage);
-                if(file != null){
-                    //desktop.open(file);
-                    lbBrowsePath.setText(file.getAbsolutePath());
-                    //image = new Image(path, width, height, preserved ratio, smooth);
-                    image = new Image(file.toURI().toString(), 100, 150, true, true);
-                    imgProfile.setImage(image);
-                    imgProfile.setFitWidth(100);
-                    imgProfile.setFitHeight(150);
-                    imgProfile.setPreserveRatio(true);
-                    
-                    //layout.setCenter(imgProfile);
-                    //BorderPane.setAlignment(imgPro, Pos.TOP_LEFT);
-                    
                 }
             }
         });
-    
+
+//closes the create account page and returns to login page
+        btnExit.setOnAction((javafx.event.ActionEvent e) -> {
+            createAccountStage.close();
+
+        });
+
+        btnBrowse.setOnAction((javafx.event.ActionEvent e) -> {
+            file = fileChooser.showOpenDialog(createAccountStage);
+            if (file != null) {
+                //desktop.open(file);
+                lbBrowsePath.setText(file.getAbsolutePath());
+                //image = new Image(path, width, height, preserved ratio, smooth);
+                image = new Image(file.toURI().toString(), 100, 150, true, true);
+                imgProfile.setImage(image);
+                imgProfile.setFitWidth(100);
+                imgProfile.setFitHeight(150);
+                imgProfile.setPreserveRatio(true);
+
+                //layout.setCenter(imgProfile);
+                //BorderPane.setAlignment(imgPro, Pos.TOP_LEFT);
+            }
+        });
+
     }
 
     public void loginError() {

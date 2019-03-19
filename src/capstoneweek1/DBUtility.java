@@ -5,14 +5,27 @@
  */
 package capstoneweek1;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.image.Image;
 
 /**
  *
@@ -25,6 +38,7 @@ public class DBUtility {
     private Connection conn = null;
     private Statement stmt = null;
     private ResultSet resultSet = null;
+    private PreparedStatement ps = null;
 
     private ObservableList<GamePlayed> gamesPlayedList = FXCollections.observableArrayList();
 
@@ -72,12 +86,54 @@ public class DBUtility {
         return resultSet;
     }
 
-    public void createNewAccount(String userName, String password, String firstName, String lastName, String email, LocalDate dob, String imagePath, String bio) throws SQLException {
+    public void createNewAccount(String userName, String password, String firstName, String lastName, String email, LocalDate dob, File image, String bio) throws SQLException, FileNotFoundException, IOException {
 
         stmt = conn.createStatement();
         // this runs the SQL query - notice the extra single quotes around the string.  Don't forget those.
-        stmt.executeUpdate("INSERT INTO `userLogin`(`userName`, `userPassword`, `Email`, `Dob`, `Image`, `firstName`, `lastName`, `Bio`) VALUES ('" + userName + "','" + password + "','" + email + "','" + dob + "','" + imagePath + "','" + firstName + "','" + lastName + "','" + bio + "')");
+        stmt.executeUpdate("INSERT INTO `userLogin`(`userName`, `userPassword`, `Email`, `Dob`, `Image`, `firstName`, `lastName`, `Bio`) VALUES ('" + userName + "','" + password + "','" + email + "','" + dob + "','" + image + "','" + firstName + "','" + lastName + "','" + bio + "')");
 
+        // Need to insert the Blob with a Prepared Statement.  This is done after the initial SQL INSERT INTO
+        FileInputStream fis = new FileInputStream(image);
+        ps = conn.prepareStatement("UPDATE userLogin SET Image = ? WHERE userName = ?");
+        ps.setBinaryStream(1, (InputStream) fis, (int) image.length());
+        ps.setString(2, userName);
+        ps.execute();
+        ps.close();
+
+    }
+
+    public Image loadProfilePicture(int userID) throws SQLException, IOException, NullPointerException {
+        Image profilePic = new Image("userPic.png");
+        String nullCheck = null;
+        boolean isEmpty = true;
+        stmt = conn.createStatement();
+        resultSet = stmt.executeQuery("SELECT Image FROM userLogin WHERE userID = " + userID + "");
+
+        //System.out.println("nullCheck: " + nullCheck.toString());
+        if (resultSet.next()) {
+            InputStream inputStream = resultSet.getBinaryStream("Image");
+            if (inputStream != null) {
+
+                //profilePic = new Image(inputStream);
+                OutputStream outputStream = new FileOutputStream(new File("img.jpg"));
+                byte[] content = new byte[5000000];
+                int size = 0;
+
+                while ((size = inputStream.read(content)) != -1) {
+                    outputStream.write(content, 0, size);
+                }
+                profilePic = new Image("file:img.jpg");
+
+                inputStream.close();
+                outputStream.close();
+            }
+        }
+
+        //outputStream.close();
+        //Image profilePic = new Image("file:img.jpg");
+//        System.out.println("image file test: " + profilePic);
+//        System.out.println("image file test: " + resultSet.getString("Image"));
+        return profilePic;
     }
 
     public void addGame(String gameTitle, int YearPublished, String genre) throws SQLException {
