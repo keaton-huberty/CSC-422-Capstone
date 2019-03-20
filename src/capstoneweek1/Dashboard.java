@@ -210,16 +210,22 @@ public class Dashboard {
                 //Code for returning to the login page will go here
             }
         });
-
+        Text tab5 = new Text("\t   ");
+        HBox bioBox = new HBox();
+        bioBox.getChildren().addAll(tab5, userBio);
         Text tab2 = new Text("\t   ");
         HBox table = new HBox();
         table.getChildren().addAll(tab2, gamesTable);
         Text tab3 = new Text("\t   ");
         HBox btn = new HBox();
+        btn.setSpacing(8);
         btn.getChildren().addAll(tab3, btnAddGameUser, btnAddGameLibrary, editInfo, updateInfo);
         Separator horizSep = new Separator();
         horizSep.setOrientation(Orientation.HORIZONTAL);
-        leftVbox.getChildren().addAll(topPane, bioLabel, btnLogout, userBio, cLabel, table, btn, btnLabel1);
+        HBox logoutHbox = new HBox();
+        Text tab4 = new Text("\t    ");
+        logoutHbox.getChildren().addAll(tab4, btnLogout);
+        leftVbox.getChildren().addAll(topPane, bioLabel, logoutHbox, bioBox, cLabel, table, btn, btnLabel1);
         leftVbox.setAlignment(Pos.TOP_LEFT);
         leftVbox.setSpacing(10);
 
@@ -767,7 +773,7 @@ public class Dashboard {
         btn.getChildren().addAll(tab3);
         Separator horizSep = new Separator();
         horizSep.setOrientation(Orientation.HORIZONTAL);
-        leftVbox.getChildren().addAll(topPane, bioLabel, userBio, cLabel, table, btn, btnLabel1);
+        leftVbox.getChildren().addAll(topPane, bioLabel, cLabel, table, btn, btnLabel1);
         leftVbox.setAlignment(Pos.TOP_LEFT);
         leftVbox.setSpacing(10);
 
