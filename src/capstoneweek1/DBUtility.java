@@ -224,7 +224,7 @@ public class DBUtility {
 
 //method for inserting msg into the databse
     public void insertMsg(String sender, String receiver, String msg) throws SQLException {
-        dbConnect();
+//        dbConnect();
         stmt = conn.createStatement();
         // this runs the SQL query - notice the extra single quotes around the string.  Don't forget those.
         stmt.executeUpdate("INSERT INTO `messenging`(`msgSender`, `msgReceiver`, `msgContent`) VALUES ('" + sender + "','" + receiver + "','" + msg + "')");
@@ -234,7 +234,7 @@ public class DBUtility {
     //method for getting msgs
     public ResultSet getMsg(String receiver) throws SQLException {
 
-        dbConnect();
+//        dbConnect();
         //first have to creat a statement
         stmt = conn.createStatement();
         // this runs the SQL query - notice the extra single quotes around the string.  Don't forget those.
@@ -267,5 +267,4 @@ public class DBUtility {
     public DBUtility() {
     }
 ;
-
 }

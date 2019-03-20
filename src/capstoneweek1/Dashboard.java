@@ -144,7 +144,7 @@ public class Dashboard {
         TextField userBio = new TextField(bio);
         userBio.setDisable(true);
 
-        userBio.setStyle("-fx-font: 18 arial;");
+        userBio.setStyle("-fx-font: 18 arial; -fx-opacity: 1.0; -fx-control-inner-background: #DCDCDC;");
         Text cLabel = new Text("\tGames I Play");
         cLabel.setStyle("-fx-font: 24 arial;");
         Button btnAddGameUser = new Button("Add Game to my List");
@@ -160,11 +160,16 @@ public class Dashboard {
             userBio.setDisable(false);
             updateInfo.setVisible(true);
             editInfo.setVisible(false);
+            userBio.setStyle("-fx-font: 18 arial; -fx-opacity: 1.0; -fx-control-inner-background: #FFF; ");
+            name.setStyle("-fx-font: 18 arial; -fx-opacity: 1.0; -fx-control-inner-background: #FFF;");
 
         });
 
-        //setting listner on update button
+
+         //setting listner on update button
         updateInfo.setOnAction((javafx.event.ActionEvent e) -> {
+            name.setStyle("-fx-font: 18 arial; -fx-opacity: 1.0; -fx-control-inner-background: #DCDCDC;");
+            userBio.setStyle("-fx-font: 18 arial; -fx-opacity: 1.0; -fx-control-inner-background: #DCDCDC;");
             name.setDisable(true);
             userBio.setDisable(true);
             updateInfo.setVisible(false);
@@ -218,12 +223,15 @@ public class Dashboard {
         leftVbox.setAlignment(Pos.TOP_LEFT);
         leftVbox.setSpacing(10);
 
-        //set up right pane for friends/messages
+     //set up right pane for friends/messages
         //button for messages, doesn't really function yet
         Button btnMessages = new Button("Messages");
         Text btnLabel2 = new Text("");
-        btnMessages.setOnAction((ActionEvent e) -> {
-            btnLabel2.setText("No messages");
+        btnMessages.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                btnLabel2.setText("No messages");
+            }
         });
         btnMessages.setStyle("-fx-background-color: #F7C4C1; -fx-border-color: #000000; -fx-font-size: 2em;");
         //btnMessages.setStyle("-fx-border-color: #000000;");
@@ -239,13 +247,13 @@ public class Dashboard {
         Button sendButton = new Button("Send");
         //refresh button
         Button refreshButton = new Button("Refresh");
-//        refreshButton.setVisible(false);
+        refreshButton.setVisible(false);
         //del button
         Button delButton = new Button("Delete All");
 
         //creating Hbox for buttons paralel to each other
         HBox buttons = new HBox();
-        buttons.getChildren().addAll(sendButton, refreshButton, delButton);
+        buttons.getChildren().addAll(sendButton,delButton, refreshButton);
         //making a text area
         TextArea textArea = TextAreaBuilder.create()
                 .prefWidth(100)
@@ -483,6 +491,23 @@ public class Dashboard {
         dashboardStage.show();
         //set background color to a light grey
         bPane.setStyle("-fx-background-color: #DCDCDC;");
+         Thread thread = new Thread(){
+                                    @Override
+				    public void run(){
+				    	
+				    	try {
+					         for(int i = 1; ; i++) {
+                                                    refreshButton.fire();//calling refresh button to auto refresh msgs after sending
+					            Thread.sleep(1000);
+					         }
+					      }catch (InterruptedException e) {
+					         System.out.println("Thread  interrupted.");
+					      }
+				    }
+				    
+				  };
+				  thread.start();
+
 
     }
 
